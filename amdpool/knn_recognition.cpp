@@ -59,21 +59,10 @@ MY_LP1:
     
 L2000:
     for ( int i = 0; i < TRAINING_SIZE; ++i ) {
-    L10:        //#pragma HLS unroll region
-        for ( int j = 0; j < 10; j++ ) {
+    L13:        //#pragma HLS unroll region
+        for ( int j = 0; j < 13; j++ ) {
             // Read a new instance from the training set
             ap_uint<196> training_instance = training_data[j * TRAINING_SIZE + i];
-            // Update the KNN set
-            update_knn( input, training_instance, knn_set[j] );
-        }
-    }
-    
-L105:
-    for ( int i = 0; i < TRAINING_SIZE_O; ++i ) {
-    L3:
-        for ( int j = 10; j < 13; j++ ) {
-            // Read a new instance from the training set
-            ap_uint<196> training_instance = training_data_O[(j - 10) * TRAINING_SIZE_O + i];
             // Update the KNN set
             update_knn( input, training_instance, knn_set[j] );
         }
@@ -97,16 +86,16 @@ L105:
 
 void update_knn( ap_uint<196> test_inst, ap_uint<196> train_inst, ap_uint<8> min_distances[K_CONST] )
 {
+    
+    ap_uint<196> diff = test_inst ^ train_inst;
+    
     ap_uint<8> distance = 0;
-LOOP1:
-    for (ap_uint<8> i = 0; i < 196; i++) {
-        if (test_inst[i] != train_inst[i]) {
-            distance++;
-        }
+    for (int i = 0; i < 196; i++) {
+        distance += diff[i];
     }
+    
     ap_uint<4> k;
     ap_uint<8> temp;
-LOOP2:
     for (ap_uint<4> i = 0; i < K_CONST-1; i++) {
         k = i;
         for (ap_uint<4> j = i+1; j < K_CONST ; j++) {

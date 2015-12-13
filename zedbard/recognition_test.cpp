@@ -55,10 +55,10 @@ int main(int argc, char *argv[]) {
         std::cout << "--------------------------------------------------------------------------" << std::endl;
         
         while ( std::getline( myfile, line) ) {
-            ap_uint<49>  input_digit3 = strtoul( line.substr(0,49).c_str(), NULL, 2);
-            ap_uint<49>  input_digit2 = strtoul( line.substr(49,49).c_str(), NULL, 2);
-            ap_uint<49>  input_digit1 = strtoul( line.substr(98,49).c_str(), NULL, 2);
-            ap_uint<49>  input_digit0 = strtoul( line.substr(147,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit3 = strtoull( line.substr(0,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit2 = strtoull( line.substr(49,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit1 = strtoull( line.substr(98,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit0 = strtoull( line.substr(147,49).c_str(), NULL, 2);
             ap_uint<196> input_digit  = (input_digit3,input_digit2,input_digit1,input_digit0);
             
             // std::cout << line << std::endl;
