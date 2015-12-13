@@ -138,13 +138,13 @@ int img_processing(char *bmp_file)
     
     img_seg(img, w, h, head, tail);
     
-    for(int j = 0 ; j < h ; j++)
-    {
-        for(int i = 0 ; i < w ; i++)
-            printf("%c ", img[j * w + i] ? '0' : '1' );
-        
-        printf("\n");
-    }
+//    for(int j = 0 ; j < h ; j++)
+//    {
+//        for(int i = 0 ; i < w ; i++)
+//            printf("%c ", img[j * w + i] ? '0' : '1' );
+//        
+//        printf("\n");
+//    }
     
     unsigned char *character_after_seg0 = (unsigned char *)malloc((tail[0] - head[0]) * HEIGHT);
     unsigned char *character_after_seg1 = (unsigned char *)malloc((tail[1] - head[1]) * HEIGHT);
@@ -324,82 +324,82 @@ int img_processing(char *bmp_file)
     std::ofstream outfile;
     outfile.open("testing_set.dat");
     
-    printf("\nprint out the auto shrinked bit vector\n\n");
+    //printf("\nprint out the auto shrinked bit vector\n\n");
     if (tail[0] - head[0] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked0[i * NEWWIDTH + j]);
+                //printf("%d", auto_shrinked0[i * NEWWIDTH + j]);
                 outfile << auto_shrinked0[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+        //printf("\n");
         outfile << std::endl;
     }
     if (tail[1] - head[1] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked1[i * NEWWIDTH + j]);
+                //printf("%d", auto_shrinked1[i * NEWWIDTH + j]);
                 outfile << auto_shrinked1[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+        //printf("\n");
         outfile << std::endl;
     }
     if (tail[2] - head[2] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked2[i * NEWWIDTH + j]);
+               // printf("%d", auto_shrinked2[i * NEWWIDTH + j]);
                 outfile << auto_shrinked2[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+       // printf("\n");
         outfile << std::endl;
     }
     if (tail[3] - head[3] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked3[i * NEWWIDTH + j]);
+               // printf("%d", auto_shrinked3[i * NEWWIDTH + j]);
                 outfile << auto_shrinked3[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+       // printf("\n");
         outfile << std::endl;
     }
     if (tail[4] - head[4] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked4[i * NEWWIDTH + j]);
+              //  printf("%d", auto_shrinked4[i * NEWWIDTH + j]);
                 outfile << auto_shrinked4[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+       // printf("\n");
         outfile << std::endl;
     }
     if (tail[5] - head[5] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked5[i * NEWWIDTH + j]);
+            //    printf("%d", auto_shrinked5[i * NEWWIDTH + j]);
                 outfile << auto_shrinked5[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+      //  printf("\n");
         outfile << std::endl;
     }
     if (tail[6] - head[6] > 0) {
         for (int i = 0; i < NEWHEIGHT; i++) {
             for (int j = 0; j < NEWWIDTH; j++) {
-                printf("%d", auto_shrinked6[i * NEWWIDTH + j]);
+             //   printf("%d", auto_shrinked6[i * NEWWIDTH + j]);
                 outfile << auto_shrinked6[i * NEWWIDTH + j];
             }
             //printf("\n");
         }
-        printf("\n");
+      //  printf("\n");
         outfile << std::endl;
     }
     

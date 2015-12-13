@@ -88,10 +88,10 @@ int expression() { //process expression and calculate
 
 int calculation(int a[], int n) {
 	string parseChar = readChar(a, n); //read in array of recognized digits
-    cout<<parseChar<<endl;
+    cout << "expression: " << parseChar << endl;
 	expressionToParse = parseChar.c_str();
     int result = expression(); // calculate
-    cout<<result<<endl;
+    cout << "result: " << result << endl;
     return result;
 }
 
