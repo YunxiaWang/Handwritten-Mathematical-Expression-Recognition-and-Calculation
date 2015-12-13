@@ -43,7 +43,6 @@ set_directive_inline update_knn
 set_directive_array_partition -type complete -dim 1 digitrec knn_set
 # Pipeline the main loop!
 set_directive_pipeline digitrec/L2000
-set_directive_pipeline digitrec/L105
 
 ############################################
 

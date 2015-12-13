@@ -41,8 +41,7 @@ create_clock -period 10
 ### You can insert your own directives here ###
 set_directive_inline -off update_knn
 set_directive_array_partition -type complete -dim 1 digitrec knn_set
-set_directive_unroll digitrec/L10
-set_directive_unroll digitrec/L3
+set_directive_unroll digitrec/L13
 
 ############################################
 
