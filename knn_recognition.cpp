@@ -5,6 +5,35 @@
 
 #include "knn_recognition.h"
 
+void dut( hls::stream< ap_uint<32> > &strm_in, hls::stream< ap_uint<32> > &strm_out )
+{
+    ap_uint<196> test;
+    ap_uint<4> vote;
+    
+    ap_uint<32> input_0 = strm_in.read();
+    ap_uint<32> input_1 = strm_in.read();
+    ap_uint<32> input_2 = strm_in.read();
+    ap_uint<32> input_3 = strm_in.read();
+    ap_uint<32> input_4 = strm_in.read();
+    ap_uint<32> input_5 = strm_in.read();
+    ap_uint<32> input_6 = strm_in.read();
+    
+    test(31,0) = input_0;
+    test(63,32) = input_1;
+    test(95,64) = input_2;
+    test(127,96) = input_3;
+    test(159,128) = input_4;
+    test(191,160) = input_5;
+    test(195,192) = input_6;
+    
+    vote = digitrec(test);
+    
+    strm_out.write(vote);
+}
+
+
+
+
 //----------------------------------------------------------
 // Top function
 //----------------------------------------------------------
@@ -28,9 +57,9 @@ MY_LP1:
     }
     
     
-MY_LP2:
+L2000:
     for ( int i = 0; i < TRAINING_SIZE; ++i ) {
-        //#pragma HLS unroll region
+    L10:        //#pragma HLS unroll region
         for ( int j = 0; j < 10; j++ ) {
             // Read a new instance from the training set
             ap_uint<196> training_instance = training_data[j * TRAINING_SIZE + i];
@@ -38,7 +67,10 @@ MY_LP2:
             update_knn( input, training_instance, knn_set[j] );
         }
     }
+    
+L105:
     for ( int i = 0; i < TRAINING_SIZE_O; ++i ) {
+    L3:
         for ( int j = 10; j < 13; j++ ) {
             // Read a new instance from the training set
             ap_uint<196> training_instance = training_data_O[(j - 10) * TRAINING_SIZE_O + i];

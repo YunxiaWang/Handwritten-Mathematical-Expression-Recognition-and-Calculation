@@ -28,7 +28,7 @@ add_files -tb training_set_7.dat
 add_files -tb training_set_8.dat
 add_files -tb training_set_9.dat
 add_files -tb training_set_minus.dat
-add_files -tb training_set_mul_dot.dat
+add_files -tb training_set_mul.dat
 add_files -tb training_set_plus.dat
 
 open_solution "solution1"
