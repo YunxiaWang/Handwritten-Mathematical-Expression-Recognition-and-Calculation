@@ -1,7 +1,10 @@
-#define WIDTH 28
-#define HEIGHT 28
-#define NEWWIDTH 14
-#define NEWHEIGHT 14
+/*
+ * SeamCarving.cpp
+ *
+ *  Created on: 2015年11月26日
+ *      Author: Lele
+ */
+#include "SeamCarving.h"
 
 int seamCal[WIDTH][HEIGHT];
 int carveMatrix[WIDTH][HEIGHT];
@@ -14,13 +17,13 @@ void computeVerticalSeams(int a[][HEIGHT]) { //WIDTH*HEIGHT 28*28 first calculat
         for (int x = 0; x < WIDTH; x++) {
             seamCal[x][y] = a[x][y];
             if (x == 0)
-                seamCal[x][y] += fmin(seamCal[x][y-1], seamCal[x+1][y-1]);
+                seamCal[x][y] += (int)fmin(seamCal[x][y-1], seamCal[x+1][y-1]);
             else if (x == WIDTH-1)
-                seamCal[x][y] += fmin(seamCal[x][y-1], seamCal[x-1][y-1]);
+                seamCal[x][y] += (int)fmin(seamCal[x][y-1], seamCal[x-1][y-1]);
             else {
                 //verticalSeamCal[x][y] += fmin(verticalSeamCal[x-1][y-1], verticalSeamCal[x][y-1], verticalSeamCal[x+1][y-1]);
-                int min = fmin(seamCal[x+1][y-1], seamCal[x][y-1]);
-                seamCal[x][y] += fmin(min, seamCal[x-1][y-1]);
+                int min = (int)fmin(seamCal[x+1][y-1], seamCal[x][y-1]);
+                seamCal[x][y] += (int)fmin(min, seamCal[x-1][y-1]);
             }
         }
     }
@@ -33,13 +36,13 @@ void computeHorizontalSeams(int a[][HEIGHT]) { //actual NEWWIDTH*HEIGHT 14*28 se
         for (int y = 0; y < HEIGHT; y++) {
             seamCal[x][y] = a[x][y];
             if (y == 0)
-                seamCal[x][y] += fmin(seamCal[x-1][y], seamCal[x-1][y+1]);
+                seamCal[x][y] += (int)fmin(seamCal[x-1][y], seamCal[x-1][y+1]);
             else if (y == HEIGHT-1)
-                seamCal[x][y] += fmin(seamCal[x-1][y], seamCal[x-1][y-1]);
+                seamCal[x][y] += (int)fmin(seamCal[x-1][y], seamCal[x-1][y-1]);
             else {
                 //horiontalSeamCal[x][y] += fmin(horiontalSeamCal[x-1][y-1], horiontalSeamCal[x-1][y], horiontalSeamCal[x-1][y+1]);
-                int min = fmin(seamCal[x-1][y+1], seamCal[x-1][y]);
-                seamCal[x][y] += fmin(min, seamCal[x-1][y-1]);
+                int min = (int)fmin(seamCal[x-1][y+1], seamCal[x-1][y]);
+                seamCal[x][y] += (int)fmin(min, seamCal[x-1][y-1]);
             }
         }
     }
@@ -95,16 +98,20 @@ void removeVerticalSeams(){ //W=WIDTH, get NEWWIDTH*HEIGHT 14*28, first remove
 //            printf("\n");
 //        }
 //        printf("\n");
-    }    
+
+    }
+    
 }
 // int (*func3())[ROW][COL] define a function returning 2D array
 //(int (*)[ROW][COL])a return 2D array
 // int (&a)[3][3] for parameter of function
 
 void removeHorizontalSeams(){ //W=NEWWIDTH, get NEWWIDTH*NEWHEIGHT 14*14 second remove
-     //first time calculate seam   
+     //first time calculate seam
+    
     //find best row
-    for (int d = 0; d < HEIGHT-NEWHEIGHT; d++) {        
+    for (int d = 0; d < HEIGHT-NEWHEIGHT; d++) {
+        
         computeHorizontalSeams(carveMatrix);
         int bestRow = 0;
         for (int j = 0; j < HEIGHT - d; j++) {
@@ -152,7 +159,25 @@ void removeHorizontalSeams(){ //W=NEWWIDTH, get NEWWIDTH*NEWHEIGHT 14*14 second 
 //    printf("\n");
 }
 
-void seamCarving(int a[]) {    
+//void init2DArray(int a[][HEIGHT]) {
+//    for (int i = 0; i < WIDTH; i++) {
+//        for (int j = 0; j < HEIGHT; j++) {
+//            a[i][j] = 0;
+//        }
+//    }
+//}
+//
+//void init1DArray(int a[]) {
+//    for (int i = 0; i < NEWWIDTH * NEWHEIGHT; i ++) {
+//        a[i] = 0;
+//    }
+//}
+
+void seamCarving(int a[]) {
+//    init2DArray(seamCal);
+//    init2DArray(carveMatrix);
+//    init1DArray(newImage);
+    
     for (int y = 0; y < HEIGHT; y++){
         for (int x = 0; x < WIDTH; x++){
             carveMatrix[x][y] = a[(HEIGHT - 1 - y) * WIDTH + x];
