@@ -6,7 +6,7 @@
 
 #include "ap_int.h"
 
-#define TRAINING_SIZE 2000
+#define TRAINING_SIZE 1600
 #define TRAINING_SIZE_O 105
 
 const ap_uint<196> training_data[10 * TRAINING_SIZE] = {
