@@ -41,9 +41,11 @@ create_clock -period 10
 ### You can insert your own directives here ###
 set_directive_inline update_knn
 set_directive_array_partition -type complete -dim 1 digitrec knn_set
-set_directive_array_partition -type block -factor 13 digitrec training_data
+set_directive_array_partition -type block -factor 10 digitrec training_data
+set_directive_array_partition -type block -factor 3 digitrec training_data_O
 # Pipeline the main loop!
 set_directive_pipeline digitrec/L2000
+set_directive_pipeline digitrec/L105
 
 ############################################
 
