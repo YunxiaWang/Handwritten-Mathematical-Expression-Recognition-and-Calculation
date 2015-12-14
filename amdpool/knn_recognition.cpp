@@ -54,19 +54,30 @@ ML1:
     }
 
 
-L2000:
-    for ( int i = 0; i < TRAINING_SIZE; ++i ) {
-    L13:        //#pragma HLS unroll region
-        for ( int j = 0; j < 13; j++ ) {
-            // Read a new instance from the training set
-            ap_uint<196> training_instance = training_data[j * TRAINING_SIZE + i];
-            // Update the KNN set
-            update_knn( input, training_instance, knn_set[j] );
+    L2000:
+        for ( int i = 0; i < TRAINING_SIZE; ++i ) {
+        L10:        //#pragma HLS unroll region
+            for ( int j = 0; j < 10; j++ ) {
+                // Read a new instance from the training set
+                ap_uint<196> training_instance = training_data[j * TRAINING_SIZE + i];
+                // Update the KNN set
+                update_knn( input, training_instance, knn_set[j] );
+            }
         }
-    }
 
-    // Compute the final output
-    return knn_vote( knn_set );
+    L105:
+        for ( int i = 0; i < TRAINING_SIZE_O; ++i ) {
+        L3:
+            for ( int j = 10; j < 13; j++ ) {
+                // Read a new instance from the training set
+                ap_uint<196> training_instance = training_data_O[(j - 10) * TRAINING_SIZE_O + i];
+                // Update the KNN set
+                update_knn( input, training_instance, knn_set[j] );
+            }
+        }
+
+        // Compute the final output
+        return knn_vote( knn_set );
 }
 
 
