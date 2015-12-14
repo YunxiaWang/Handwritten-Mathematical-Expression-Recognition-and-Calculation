@@ -12,6 +12,7 @@
 
 #define K_CONST 3
 #define TRAINING_SIZE 2000
+#define TRAINING_SIZE_O 105
 
 void dut( hls::stream< ap_uint<32> > &strm_in, hls::stream< ap_uint<32> > &strm_out );
 
