@@ -54,7 +54,7 @@ ML1:
     }
 
 
-    L2000:
+    L1600:
         for ( int i = 0; i < TRAINING_SIZE; ++i ) {
         L10:        //#pragma HLS unroll region
             for ( int j = 0; j < 10; j++ ) {
