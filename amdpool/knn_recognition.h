@@ -10,7 +10,7 @@
 #include "training_data.h"
 #include <hls_stream.h>
 
-#define K_CONST 3
+#define K_CONST 2
 #define TRAINING_SIZE 1600
 #define TRAINING_SIZE_O 105
 
