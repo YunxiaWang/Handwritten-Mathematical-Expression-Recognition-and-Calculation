@@ -102,7 +102,7 @@ void update_knn( ap_uint<196> test_inst, ap_uint<196> train_inst, ap_uint<8> min
     		maxindex=k;
     	}
     }
-    if (dist<min_distances[maxindex]) // sustitute the biggest with small distance
+    if (distance<min_distances[maxindex]) // sustitute the biggest with small distance
     	min_distances[maxindex]=distance;
 
 }
