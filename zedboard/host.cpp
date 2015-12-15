@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     
     // Arrays to store test data
     ap_uint<196> inputs[7];
-    ap_uint<32> interpreted_digit;
+    uint32_t interpreted_digit;
     
     // Timer
     Timer timer("digitrec FPGA");
@@ -87,8 +87,25 @@ int main(int argc, char *argv[]) {
         timer.start();
         
         for (int i = 0; i < count; i++) {
-            nbytes = write (fdw, (void*)&inputs[i], sizeof(inputs[i]));
-            assert (nbytes == sizeof(inputs[i]));
+            
+            uint32_t input0 = inputs[i].range(31,0);
+            uint32_t input1 = inputs[i].range(63,32);
+            uint32_t input2 = inputs[i].range(95,64);
+            uint32_t input3 = inputs[i].range(127,96);
+            uint32_t input4 = inputs[i].range(159,128);
+            uint32_t input5 = inputs[i].range(191,160);
+            uint32_t input6 = inputs[i].range(195,192);
+            
+            write (fdw, (void*)&input0, sizeof(input0));
+            write (fdw, (void*)&input1, sizeof(input1));
+            write (fdw, (void*)&input2, sizeof(input2));
+            write (fdw, (void*)&input3, sizeof(input3));
+            write (fdw, (void*)&input4, sizeof(input4));
+            write (fdw, (void*)&input5, sizeof(input5));
+            write (fdw, (void*)&input6, sizeof(input6));
+            
+            //nbytes = write (fdw, (void*)&inputs[i], sizeof(inputs[i]));
+            //assert (nbytes == sizeof(inputs[i]));
         }
         
         for (int i = 0; i < count; i++) {
