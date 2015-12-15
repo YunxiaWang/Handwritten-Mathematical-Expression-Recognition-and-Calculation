@@ -18,9 +18,9 @@ sw: knn_recognition.cpp recognition_test.cpp calculation.cpp img_processing.cpp
 	g++ ${CFLAGS} knn_recognition.cpp recognition_test.cpp calculation.cpp img_processing.cpp -o recognition_test-arm
 	
 
-fpga: host.cpp
+fpga: host.cpp calculation.cpp img_processing.cpp
 	@echo "Compiling host program & running digitrec accelerator ..."
-	g++ ${CFLAGS} host.cpp -o recognition_test-fpga
+	g++ ${CFLAGS} host.cpp calculation.cpp img_processing.cpp -o recognition_test-fpga
 	
 
 # Clean up the directory before submission

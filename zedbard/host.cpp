@@ -32,16 +32,24 @@ int main(int argc, char *argv[]) {
     std::cout << "----------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
     
+    // Open channels to the FPGA board.
+    // These channels appear as files to the Linux OS
+    int fdr = open("/dev/xillybus_read_32", O_RDONLY);
+    int fdw = open("/dev/xillybus_write_32", O_WRONLY);
+    
+    // Check that the channels are correctly opened
+    if ((fdr < 0) || (fdw < 0)) {
+        fprintf (stderr, "Failed to open Xillybus device channels\n");
+        exit(-1);
+    }
+    
     // Read input file for the testing set
     std::string line;
     std::ifstream myfile ("testing_set.dat");
     
-    // HLS streams for communicating with the block
-    hls::stream< ap_uint<32> > digitrec_in;
-    hls::stream< ap_uint<32> > digitrec_out;
-    
     // Arrays to store test data
     ap_uint<196> inputs[7];
+    ap_uint<32> interpreted_digit;
     
     // Timer
     Timer timer("digitrec FPGA");
@@ -60,10 +68,10 @@ int main(int argc, char *argv[]) {
         std::cout << "--------------------------------------------------------------------------" << std::endl;
         
         while ( std::getline( myfile, line) ) {
-            ap_uint<49>  input_digit3 = strtoul( line.substr(0,49).c_str(), NULL, 2);
-            ap_uint<49>  input_digit2 = strtoul( line.substr(49,49).c_str(), NULL, 2);
-            ap_uint<49>  input_digit1 = strtoul( line.substr(98,49).c_str(), NULL, 2);
-            ap_uint<49>  input_digit0 = strtoul( line.substr(147,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit3 = strtoull( line.substr(0,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit2 = strtoull( line.substr(49,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit1 = strtoull( line.substr(98,49).c_str(), NULL, 2);
+            ap_uint<49>  input_digit0 = strtoull( line.substr(147,49).c_str(), NULL, 2);
             ap_uint<196> input_digit  = (input_digit3,input_digit2,input_digit1,input_digit0);
             
             // std::cout << line << std::endl;
@@ -86,6 +94,10 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < count; i++) {
             nbytes = read (fdr, (void*)&interpreted_digit, sizeof(interpreted_digit));
             assert (nbytes == sizeof(interpreted_digit));
+            std::cout << "interpreted_digit_or_operator "<< i << " : " << std::dec << interpreted_digit << std::endl;
+            
+            // store the recognized digit or operators in array for later on utilization
+            number[i] = interpreted_digit;
         }
         
         timer.stop();

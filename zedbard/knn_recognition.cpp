@@ -9,7 +9,7 @@ void dut( hls::stream< ap_uint<32> > &strm_in, hls::stream< ap_uint<32> > &strm_
 {
     ap_uint<196> test;
     ap_uint<4> vote;
-    
+
     ap_uint<32> input_0 = strm_in.read();
     ap_uint<32> input_1 = strm_in.read();
     ap_uint<32> input_2 = strm_in.read();
@@ -17,7 +17,7 @@ void dut( hls::stream< ap_uint<32> > &strm_in, hls::stream< ap_uint<32> > &strm_
     ap_uint<32> input_4 = strm_in.read();
     ap_uint<32> input_5 = strm_in.read();
     ap_uint<32> input_6 = strm_in.read();
-    
+
     test(31,0) = input_0;
     test(63,32) = input_1;
     test(95,64) = input_2;
@@ -25,14 +25,11 @@ void dut( hls::stream< ap_uint<32> > &strm_in, hls::stream< ap_uint<32> > &strm_
     test(159,128) = input_4;
     test(191,160) = input_5;
     test(195,192) = input_6;
-    
+
     vote = digitrec(test);
-    
+
     strm_out.write(vote);
 }
-
-
-
 
 //----------------------------------------------------------
 // Top function
@@ -47,7 +44,7 @@ ap_uint<4> digitrec( ap_uint<196> input )
     //#pragma HLS array_partition variable=knn_set block factor=13 dim=1
     //#pragma HLS array_partition variable=training_data block factor=13
     // Initialize the knn set
-MY_LP1:
+ML1:
     for ( int i = 0; i < 13; ++i ) {
         //#pragma HLS unroll
         for ( int k = 0; k < K_CONST; ++k ) {
@@ -55,9 +52,9 @@ MY_LP1:
             knn_set[i][k] = 197;
         }
     }
-    
-    
- L2000:
+
+
+    L1600:
         for ( int i = 0; i < TRAINING_SIZE; ++i ) {
         L10:        //#pragma HLS unroll region
             for ( int j = 0; j < 10; j++ ) {
@@ -97,32 +94,25 @@ MY_LP1:
 
 void update_knn( ap_uint<196> test_inst, ap_uint<196> train_inst, ap_uint<8> min_distances[K_CONST] )
 {
-    
+
     ap_uint<196> diff = test_inst ^ train_inst;
-    
+
     ap_uint<8> distance = 0;
     for (int i = 0; i < 196; i++) {
         distance += diff[i];
     }
-    
-    ap_uint<4> k;
-    ap_uint<8> temp;
-    for (ap_uint<4> i = 0; i < K_CONST-1; i++) {
-        k = i;
-        for (ap_uint<4> j = i+1; j < K_CONST ; j++) {
-            if (min_distances[k] > min_distances[j]) {
-                k = j;
-            }
-        }
-        if (i != k) {
-            temp = min_distances[i];
-            min_distances[i] = min_distances[k];
-            min_distances[k] = temp;
-        }
+
+    ap_uint<8> maxdis=0;
+    ap_uint<4> maxindex=0;
+    for (int k=0; k<K_CONST; k++){ //find the biggest distance
+    	if (min_distances[k]>maxdis){
+    		maxdis=min_distances[k];
+    		maxindex=k;
+    	}
     }
-    if (distance < min_distances[K_CONST-1]) {
-        min_distances[K_CONST-1] = distance;
-    }
+    if (distance<min_distances[maxindex]) // sustitute the biggest with small distance
+    	min_distances[maxindex]=distance;
+
 }
 
 
@@ -139,71 +129,52 @@ void update_knn( ap_uint<196> test_inst, ap_uint<196> train_inst, ap_uint<8> min
 
 ap_uint<4> knn_vote( ap_uint<8> knn_set[13][K_CONST] )
 {
-    // put 2-d knn_set[][] array into 1-d knn[] array
-    ap_uint<8> knn[13 * K_CONST];
-    ap_uint<4> index[13 * K_CONST];
-    
-LOOP3:
-    for (ap_uint<4> i = 0; i < 13; i++) {
-        for (ap_uint<4> j = 0; j < K_CONST; j++) {
-            knn[i * K_CONST + j] = knn_set[i][j];
-            index[i * K_CONST + j] = i;
-        }
-    }
-    // sort 1-d knn[] array with their index
-    ap_uint<8> k;
-    ap_uint<8> temp1, temp2;
-LOOP4:
-    for (ap_uint<8> i = 0; i < 13*K_CONST-1; i++) {
-        k = i;
-        for (ap_uint<8> j = i+1; j < 13*K_CONST ; j++) {
-            if (knn[k] > knn[j]) {
-                k = j;
-            }
-        }
-        if (i != k) {
-            temp1 = knn[i];
-            knn[i] = knn[k];
-            knn[k] = temp1;
-            temp2 = index[i];
-            index[i] = index[k];
-            index[k] = temp2;
-        }
-    }
-    // take out the first K_CONST minimum digit's index then put them into a 1-d index_actual[] array with
-    
-    ap_uint<4> index_actual[K_CONST];
-    int index_count[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
-    
-LOOP5:
-    for (ap_uint<4> i = 0; i < K_CONST; i++) {
-        index_actual[i] = index[i];
-    }
-    
-    // find out the number of each digit 0 ~ 9 from index_actual
-LOOP6:
-    for (ap_uint<4> i = 0; i < K_CONST; i++) {
-        index_count[index_actual[i]]++;
-    }
-    // sort the index_count with their indices
-    
-    ap_uint<4> indices[13] = {0,1,2,3,4,5,6,7,8,9,10,11,12};
-LOOP7:
-    for (ap_uint<4> i = 0; i < 13 - 1; i++) {
-        k = i;
-        for (ap_uint<4> j = i+1; j < 13 ; j++) {
-            if (index_count[k] > index_count[j]) {
-                k = j;
-            }
-        }
-        if (i != k) {
-            temp1 = index_count[i];
-            index_count[i] = index_count[k];
-            index_count[k] = temp1;
-            temp2 = indices[i];
-            indices[i] = indices[k];
-            indices[k] = temp2;
-        }
-    }
-    return indices[12];
+	struct distance{ // build struct for distance and its digit
+		ap_uint<8> dist;
+		ap_uint<4> index;
+	};
+	struct distance dis[13*K_CONST];
+	ap_uint<8> allsort[13*K_CONST];
+	for (int i=0; i<13; i++){ // input arrays
+		for (int j=0; j<K_CONST; j++){
+			allsort[i*K_CONST+j]=knn_set[i][j];
+			dis[i*K_CONST+j].dist=knn_set[i][j];
+			dis[i*K_CONST+j].index=i;
+		}
+	}
+	for (int m=0; m<13*K_CONST; m++){
+		for (int n = 13*K_CONST-2; n >= 0; --n) {
+			if (n >= m) {
+				if (allsort[n] > allsort[n+1]){
+					ap_uint<8> t=allsort[n]; // sorting the 13*K distances
+					allsort[n]=allsort[n+1];
+					allsort[n+1]=t;
+					distance tt = dis[n]; // sorting the digit with distances
+					dis[n] = dis[n+1];
+					dis[n+1]= tt;
+				}
+			}
+		}
+	}
+	struct comdigit{ // build struct for digit and its occuring times
+		ap_uint<4> digits;
+		ap_uint<4> times;
+	};
+	struct comdigit mostcommon[K_CONST]; //k digits and their occuring times
+	for (int k1=0; k1<K_CONST; k1++){ // get the most common K digits
+		mostcommon[k1].digits=dis[k1].index;
+		mostcommon[k1].times=0;
+		for (int k2=0; k2<K_CONST; k2++){ // count the number of common digits
+			if (mostcommon[k1].digits==mostcommon[k2].digits)
+				mostcommon[k1].times++;
+		}
+	}
+	for (int k3=0; k3<K_CONST; k3++){  // find the most common digit
+		if (mostcommon[0].times<mostcommon[k3].times){
+			comdigit t=mostcommon[0];
+			mostcommon[0]=mostcommon[k3];
+			mostcommon[k3]=t;
+		}
+	}
+	return mostcommon[0].digits;
 }
